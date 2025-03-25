@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "fork-blob"
+version = "0.1.0"
+description = ""
+authors = ["Nikolay Nekrasov <nnnekrasov@edu.hse.ru>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+minio = "^7.2.15"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
