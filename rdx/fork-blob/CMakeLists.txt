@@ -1,19 +1,29 @@
-cmake_minimum_required(VERSION 3.10)
-project(ForkUp)
+cmake_minimum_required(VERSION 3.13)
+project(hello_s3)
 
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_TOOLCHAIN_FILE "/home/user/practice-fork-up/rdx/fork-blob/vcpkg/scripts/buildsystems/vcpkg.cmake")
 
-# Find AWS SDK
-find_package(AWSSDK REQUIRED COMPONENTS s3)
-# Find nlohmann_json (make sure it's installed)
-find_package(nlohmann_json 3.2.0 REQUIRED)
+# Ручное указание путей
+set(AWS_SDK_INCLUDE_DIR "/home/user/practice-fork-up/rdx/fork-blob/vcpkg/installed/x64-linux/include")
+set(AWS_SDK_LIB_DIR "/home/user/practice-fork-up/rdx/fork-blob/vcpkg/installed/x64-linux/lib")
 
-add_executable(fork-up fork-up.cpp)
+include_directories(${AWS_SDK_INCLUDE_DIR})
+link_directories(${AWS_SDK_LIB_DIR})
 
-target_link_libraries(fork-up 
-    PRIVATE 
-    ${AWSSDK_LIBRARIES}
-    nlohmann_json::nlohmann_json
+add_executable(${PROJECT_NAME} hello_s3.cpp)
+
+find_package(CURL REQUIRED)
+find_package(OpenSSL REQUIRED)
+find_package(ZLIB REQUIRED)
+find_package(aws-cpp-sdk-core REQUIRED)
+find_package(aws-cpp-sdk-s3 REQUIRED)
+
+target_link_libraries(${PROJECT_NAME} PRIVATE
+    aws-cpp-sdk-s3
+    aws-cpp-sdk-core
+    OpenSSL::SSL
+    OpenSSL::Crypto
+    ZLIB::ZLIB
     pthread
+    dl
 )
