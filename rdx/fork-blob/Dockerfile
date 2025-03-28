@@ -24,7 +24,9 @@ RUN ${VCPKG_ROOT}/vcpkg install \
 
 # Копируем исходный код
 WORKDIR /app
-COPY . /app
+COPY ./src /app/src
+COPY ./CMakeLists.txt /app/CMakeLists.txt
+COPY ./testsuite /app/testsuite
 
 # Сборка с использованием vcpkg
 ENV CMAKE_TOOLCHAIN_FILE=${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake
