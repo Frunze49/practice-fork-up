@@ -8,37 +8,27 @@
 #include <iostream>
 #include "client.hpp"
 
-std::shared_ptr<Aws::S3::S3Client> CreateS3Client(const S3Config& s3_config) {
+S3Client::S3Client(const S3Config& s3_config) {
     Aws::Client::ClientConfiguration client_config;
     
     client_config.endpointOverride = s3_config.endpoint;
     client_config.scheme = Aws::Http::Scheme::HTTP;
     client_config.verifySSL = false;
     
-    return std::make_shared<Aws::S3::S3Client>(Aws::Auth::AWSCredentials(s3_config.access_key, s3_config.secret_key), client_config, 
+    s3_client = Aws::S3::S3Client(Aws::Auth::AWSCredentials(s3_config.access_key, s3_config.secret_key), client_config, 
                              Aws::Client::AWSAuthV4Signer::PayloadSigningPolicy::Never, false);
 }
 
-bool check_chunk_exists(const std::unique_ptr<Aws::S3::S3Client>& s3_client, const std::string& bucket, const std::string& chunk_hash) {
-    Aws::S3::Model::HeadObjectRequest head_request;
-    head_request.SetBucket(bucket.c_str());
-    head_request.SetKey(chunk_hash.c_str());
+bool S3Client::createBucket(const std::string& bucket) const {
+    Aws::S3::Model::CreateBucketRequest createBucketRequest;
 
-    auto outcome = s3_client->HeadObject(head_request);
+    createBucketRequest.SetBucket(bucket);
+    
+    auto outcome = s3_client.CreateBucket(createBucketRequest);
     return outcome.IsSuccess();
 }
 
-bool createBucket(Aws::S3::S3Client& s3_client, const std::string& bucket) {
-  Aws::S3::Model::CreateBucketRequest createBucketRequest;
-
-  createBucketRequest.SetBucket(bucket);
-  
-  auto outcome = s3_client.CreateBucket(createBucketRequest);
-  return outcome.IsSuccess();
-}
-
-
-void upload_chunk(const std::unique_ptr<Aws::S3::S3Client>& s3_client, const std::string& bucket, const std::string& chunk_hash, const std::vector<char>& data) {
+void S3Client::upload_chunk(const std::string& bucket, const std::string& chunk_hash, const std::vector<char>& data) const {
     Aws::S3::Model::PutObjectRequest put_request;
     put_request.SetBucket(bucket.c_str());
     put_request.SetKey(chunk_hash.c_str());
@@ -47,13 +37,15 @@ void upload_chunk(const std::unique_ptr<Aws::S3::S3Client>& s3_client, const std
     stream->write(data.data(), data.size());
     put_request.SetBody(stream);
 
-    auto outcome = s3_client->PutObject(put_request);
+    auto outcome = s3_client.PutObject(put_request);
     if (!outcome.IsSuccess()) {
         std::cerr << "Failed to upload chunk: " << chunk_hash << std::endl;
     } else {
         std::cout << "Uploaded chunk: " << chunk_hash << std::endl;
     }
 }
+
+
 
 // int main() {
     // Aws::SDKOptions options;

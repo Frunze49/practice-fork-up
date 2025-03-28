@@ -12,5 +12,14 @@ private:
   }
 };
 
+class S3Client {
+private:
+  Aws::S3::S3Client s3_client;
+public:
+  S3Client(const S3Config& s3_config);
+  ~S3Client();
 
-std::shared_ptr<Aws::S3::S3Client> CreateS3Client(const S3Config& s3_config);
+  bool check_chunk_exists(const std::string& bucket, const std::string& chunk_hash) const;
+  bool createBucket(const std::string& bucket) const;
+  void upload_chunk(const std::string& bucket, const std::string& chunk_hash, const std::vector<char>& data) const;
+};
