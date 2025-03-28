@@ -9,8 +9,8 @@ namespace forkup {
 
 class ForkUpProvider {
 public:
-    explicit ForkUpProvider(S3Client&& s3_client)
-        : s3_client_(std::move(s3_client)) {}
+    explicit ForkUpProvider(S3Client s3_client)
+        : s3_client_(s3_client) {}
 
     void ForkUp(const std::string& manifest_file_path, const std::string& binary_file_path) const;
 

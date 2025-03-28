@@ -17,7 +17,7 @@ private:
   Aws::S3::S3Client s3_client;
 public:
   S3Client(const S3Config& s3_config);
-  ~S3Client();
+  ~S3Client() = default;
 
   bool check_chunk_exists(const std::string& bucket, const std::string& chunk_hash) const;
   bool createBucket(const std::string& bucket) const;

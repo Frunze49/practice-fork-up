@@ -45,6 +45,7 @@ enable_testing()
 set(FORK_UP_SOURCES
     src/fork_up.cpp
     src/s3_client/client.cpp
+    src/file_helper/helper.cpp
     # Add other source files needed by fork_up here
 )
 

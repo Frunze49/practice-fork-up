@@ -4,6 +4,7 @@ services:
     image: minio/minio
     ports:
       - "9000:9000"
+      - "9001:9001"
     environment:
       MINIO_ACCESS_KEY: cXGiKi9Otf3xtIbPGHp9
       MINIO_SECRET_KEY: bDpmvYrjsaqPigTazyB9SVQGFxtk9FJeSFVp4nlb
