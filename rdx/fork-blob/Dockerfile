@@ -19,7 +19,7 @@ RUN git clone https://github.com/Microsoft/vcpkg.git ${VCPKG_ROOT} \
 
 # Установка минимально необходимых зависимостей
 RUN ${VCPKG_ROOT}/vcpkg install \
-    aws-sdk-cpp[s3] \
+    aws-sdk-cpp \
     gtest
 
 # Копируем исходный код
@@ -29,7 +29,7 @@ COPY . /app
 # Сборка с использованием vcpkg
 ENV CMAKE_TOOLCHAIN_FILE=${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake
 RUN mkdir -p build && cd build \
-    && cmake .. -DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE} \
+    && cmake .. \
     && cmake --build .
 
 # Установка переменных окружения для S3
@@ -38,4 +38,4 @@ ENV S3_ACCESS_KEY=cXGiKi9Otf3xtIbPGHp9
 ENV S3_SECRET_KEY=bDpmvYrjsaqPigTazyB9SVQGFxtk9FJeSFVp4nlb
 
 # Запуск тестов
-CMD cd build && ctest -V
+CMD cd build && ./test_fork_up
