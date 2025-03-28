@@ -18,10 +18,12 @@ public:
 
 class Manifest : public FileReader {
 public:
+    Manifest(const std::string& filePath) : FileReader(filePath) {}
     std::optional<ChunkInfo> get_next_block();
 };
 
 class Blob : public FileReader {
 public:
+    Blob(const std::string& filePath) : FileReader(filePath) {}
     std::vector<char> read_next_data(uint32_t size);
 };
