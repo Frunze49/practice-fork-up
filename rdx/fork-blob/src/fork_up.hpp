@@ -1,5 +1,4 @@
 #pragma once
-#include <unordered_map>
 #include <aws/s3/S3Client.h>
 
 #include "s3_client/client.hpp"

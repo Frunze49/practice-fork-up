@@ -15,7 +15,7 @@ FileReader::~FileReader() {
     }
 }
 
-std::optional<ChunkInfo> Manifest::get_next_block() {
+std::optional<ChunkInfo> Manifest::GetNextBlock() {
     std::string line;
     if (std::getline(file, line)) {
         size_t delimiter_pos = line.find(':');
@@ -37,7 +37,7 @@ std::optional<ChunkInfo> Manifest::get_next_block() {
 }
 
 
-std::vector<char> Blob::read_next_data(uint32_t size) {
+std::vector<char> Blob::ReadNextData(uint32_t size) {
     std::vector<char> buffer(size);
     file.read(reinterpret_cast<char*>(buffer.data()), size);
     std::streamsize bytes_read = file.gcount();

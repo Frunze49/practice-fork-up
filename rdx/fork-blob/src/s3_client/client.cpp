@@ -19,7 +19,7 @@ S3Client::S3Client(const S3Config& s3_config) {
                              Aws::Client::AWSAuthV4Signer::PayloadSigningPolicy::Never, false);
 }
 
-bool S3Client::check_chunk_exists(const std::string& bucket, const std::string& chunk_hash) const {
+bool S3Client::CheckChunkExists(const std::string& bucket, const std::string& chunk_hash) const {
     Aws::S3::Model::HeadObjectRequest head_request;
     head_request.SetBucket(bucket.c_str());
     head_request.SetKey(chunk_hash.c_str());
@@ -28,7 +28,7 @@ bool S3Client::check_chunk_exists(const std::string& bucket, const std::string& 
     return outcome.IsSuccess();
 }
 
-bool S3Client::createBucket(const std::string& bucket) const {
+bool S3Client::CreateBucket(const std::string& bucket) const {
     Aws::S3::Model::CreateBucketRequest createBucketRequest;
 
     createBucketRequest.SetBucket(bucket);
@@ -37,7 +37,7 @@ bool S3Client::createBucket(const std::string& bucket) const {
     return outcome.IsSuccess();
 }
 
-void S3Client::upload_chunk(const std::string& bucket, const std::string& chunk_hash, const std::vector<char>& data) const {
+void S3Client::UploadChunk(const std::string& bucket, const std::string& chunk_hash, const std::vector<char>& data) const {
     Aws::S3::Model::PutObjectRequest put_request;
     put_request.SetBucket(bucket.c_str());
     put_request.SetKey(chunk_hash.c_str());
