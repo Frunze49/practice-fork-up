@@ -11,13 +11,13 @@
 #include <cstdlib>
 
 #include "fork_up.hpp"
+#include "file_helper/helper.hpp"
 
 class ForkUpTest : public ::testing::Test {
 protected:
-    ForkUpTest() : s3_client(S3Config()) {}
-
     void SetUp() override {
       Aws::InitAPI(options);
+      s3_client = std::make_shared<S3Client>(S3Config());
     }
     
     void TearDown() override {
@@ -25,18 +25,20 @@ protected:
     }
     
     Aws::SDKOptions options;
-    S3Client s3_client;
+    std::shared_ptr<S3Client> s3_client;
 };
 
 TEST_F(ForkUpTest, CreateBucket) {
-    const auto bucket_name = "test";
+    const auto binary_file_path = "./testsuite/results/small.bin";
+    const auto manifest_file_path = "./testsuite/results/small.manifest";
 
     const auto fork_up_provider = forkup::ForkUpProvider(s3_client);
-    EXPECT_NO_THROW(fork_up_provider.ForkUp({}, bucket_name));
+    EXPECT_NO_THROW(fork_up_provider.ForkUp(binary_file_path, binary_file_path));
 
-    // auto outcome = s3_client->HeadBucket(request);
-    
-    // EXPECT_TRUE(outcome.IsSuccess());
+    Manifest manifest(manifest_file_path);
+    while (const auto blob = manifest.GetNextBlock()) {
+      ASSERT_TRUE(s3_client->CheckChunkExists(binary_file_path, blob->chunk_hash));
+    }
 }
 
 int main(int argc, char **argv) {

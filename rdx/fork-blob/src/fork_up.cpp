@@ -1,5 +1,7 @@
-#include "fork_up.hpp"
 #include <aws/s3/model/CreateBucketRequest.h>
+
+#include "fork_up.hpp"
+#include "file_helper/helper.hpp"
 
 namespace forkup {
 
@@ -14,8 +16,8 @@ void ForkUpProvider::ForkUp(const std::string& manifest_file_path, const std::st
 
       auto data_to_write = blob.ReadNextData(current_chunk_info.value().chunk_size);
 
-      if (!s3_client_.CheckChunkExists(binary_file_path, ch_hash)) {
-          s3_client_.UploadChunk(binary_file_path, ch_hash, data_to_write);
+      if (!s3_client_->CheckChunkExists(binary_file_path, ch_hash)) {
+          s3_client_->UploadChunk(binary_file_path, ch_hash, data_to_write);
       }
 
       current_chunk_info = manifest.GetNextBlock();
