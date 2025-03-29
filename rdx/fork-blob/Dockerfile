@@ -40,4 +40,4 @@ ENV S3_ACCESS_KEY=cXGiKi9Otf3xtIbPGHp9
 ENV S3_SECRET_KEY=bDpmvYrjsaqPigTazyB9SVQGFxtk9FJeSFVp4nlb
 
 # Запуск тестов
-CMD cd build && ./test_fork_up
+CMD ./build/test_fork_up

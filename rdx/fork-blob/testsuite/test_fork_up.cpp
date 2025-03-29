@@ -9,6 +9,7 @@
 #include <aws/core/utils/UUID.h>
 
 #include <cstdlib>
+#include <filesystem>
 
 #include "fork_up.hpp"
 #include "file_helper/helper.hpp"
@@ -28,16 +29,18 @@ protected:
     std::shared_ptr<S3Client> s3_client;
 };
 
-TEST_F(ForkUpTest, CreateBucket) {
-    const auto binary_file_path = "./testsuite/results/small.bin";
-    const auto manifest_file_path = "./testsuite/results/small.manifest";
+TEST_F(ForkUpTest, ForkUpSmall) {
+    const auto binary_file_path = "small.bin";
+    const auto manifest_file_path = "small.manifest";
 
     const auto fork_up_provider = forkup::ForkUpProvider(s3_client);
-    EXPECT_NO_THROW(fork_up_provider.ForkUp(binary_file_path, binary_file_path));
+    EXPECT_NO_THROW(fork_up_provider.ForkUp(manifest_file_path, binary_file_path));
 
     Manifest manifest(manifest_file_path);
+    std::string bucket = std::filesystem::path(binary_file_path).filename().string();
+
     while (const auto blob = manifest.GetNextBlock()) {
-      ASSERT_TRUE(s3_client->CheckChunkExists(binary_file_path, blob->chunk_hash));
+      ASSERT_TRUE(s3_client->CheckChunkExists(bucket, blob->chunk_hash));
     }
 }
 

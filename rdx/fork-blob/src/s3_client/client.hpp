@@ -16,7 +16,8 @@ class S3Client {
 public:
   S3Client(const S3Config& s3_config);
 
-  bool CheckChunkExists(const std::string& bucket, const std::string& chunk_hash) const;
+  bool CheckChunkExists(const std::string& bucket, const std::string& chunk_hash);
+  bool CheckBucketExists(const std::string& bucket) const;
   bool CreateBucket(const std::string& bucket) const;
   void UploadChunk(const std::string& bucket, const std::string& chunk_hash, const std::vector<char>& data) const;
 
